@@ -6,6 +6,7 @@ export class User {
     public readonly password: string,
     public readonly verificationStatus: boolean,
     public readonly createdAt?: Date,
-    public readonly updatedAt?: Date
+    public readonly updatedAt?: Date,
+    public readonly favouriteCities?: { cityname: string }[]
   ) {}
 }

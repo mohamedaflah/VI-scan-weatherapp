@@ -13,4 +13,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                 String          @id @default(uuid()) @db.Uuid
+  name               String
+  email              String          @unique
+  password           String
+  verificationStatus Boolean
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  favouriteCities    FavouriteCity[] @relation("UserFavouriteCities")
 
+  @@map("users") // Optional: Map to a custom table name in the database if needed
+}
+
+model FavouriteCity {
+  id       String @id @default(uuid()) @db.Uuid
+  cityname String
+  userId   String @db.Uuid
+  user     User   @relation(fields: [userId], references: [id], name: "UserFavouriteCities")
+
+  @@map("favourite_cities") // Optional: Map to a custom table name in the database if needed
+}
