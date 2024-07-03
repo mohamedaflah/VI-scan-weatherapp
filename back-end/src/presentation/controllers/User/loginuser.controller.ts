@@ -1,30 +1,28 @@
-import e, { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { IUserUseCase } from "../../../application/interfaces/usecase.interface";
 import { CustomeError } from "../../../utils/errors/CustomeErr";
 import { generateJWTtoken } from "../../../utils/jwt/generateToken";
 
-export class UserRegisterController {
+export class LoginUserController {
   private userUsecase: IUserUseCase;
   constructor(useCase: IUserUseCase) {
     this.userUsecase = useCase;
   }
-  async registerUser(req: Request, res: Response, next: NextFunction) {
+  async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email } = req.body;
-      let user = await this.userUsecase.checkUserWithEmail(email as string);
-      if (user) {
+      let user = await this.userUsecase.checkUserWithEmail(req.body.email);
+      if (!user) {
         throw new CustomeError(
-          "User already exist with this email",
-          409,
-          "Conflict"
+          "User not found with this email",
+          404,
+          "Not found"
         );
       }
-      user = await this.userUsecase.createUserUsecase(req.body);
       const token = generateJWTtoken({ id: user.id });
       res.cookie(process.env.VERIFIED_COOKIE_NAME as string, token);
       return res
-        .status(201)
-        .json({ status: true, message: "User created!!", user });
+        .status(200)
+        .json({ status: true, message: "Login successful!!", user });
     } catch (error) {
       next(error);
     }
