@@ -1,9 +1,11 @@
 export class User {
   constructor(
-    private readonly _id: string,
-    private readonly name: string,
-    private readonly email: string,
-    private readonly password: string,
-    private readonly verificationStatus: boolean
+    public readonly _id: string,
+    public readonly name: string,
+    public readonly email: string,
+    public readonly password: string,
+    public readonly verificationStatus: boolean,
+    public readonly createdAt?: Date,
+    public readonly updatedAt?: Date
   ) {}
 }
