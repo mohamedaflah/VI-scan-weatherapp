@@ -56,8 +56,9 @@ const Signup = () => {
     verificationSend && setModalOpen(true);
   }, [verificationSend]);
   useEffect(() => {
-    const param = new URLSearchParams(window.location.href);
+    const param = new URLSearchParams(window.location.search);
     const token = param.get("qrt");
+
     if (token) {
       setModalOpen(true);
       dispatch(verifyUser(token as string));

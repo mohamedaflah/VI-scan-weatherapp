@@ -74,7 +74,7 @@ const userReducer = createSlice({
       .addCase(getUserAction.rejected, (state, { payload }) => {
         state.loading = false;
         state.err = String(payload);
-  
+        state.user = null;
       });
   },
 });
