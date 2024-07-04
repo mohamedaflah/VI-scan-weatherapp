@@ -21,7 +21,7 @@ export class UserUseCase implements IUserUseCase {
   async getUserUsecase(userId: string): Promise<User> {
     return await this.repository.getUserRepo(userId);
   }
-  async checkUserWithEmail(email: string): Promise<User> {
+  async checkUserWithEmail(email: string): Promise<User|null> {
     return await this.repository.checkUserWithEmailRepo(email);
   }
 }

@@ -3,6 +3,7 @@ import { IUserUseCase } from "../../../application/interfaces/usecase.interface"
 import { CustomeError } from "../../../utils/errors/CustomeErr";
 import { generateJWTtoken } from "../../../utils/jwt/generateToken";
 
+
 export class LoginUserController {
   private userUsecase: IUserUseCase;
   constructor(useCase: IUserUseCase) {
@@ -10,7 +11,8 @@ export class LoginUserController {
   }
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
-      let user = await this.userUsecase.checkUserWithEmail(req.body.email);
+            
+      let user = await this.userUsecase.loginUserUsecase({email:req.body.email,password:req.body.password});
       if (!user) {
         throw new CustomeError(
           "User not found with this email",
