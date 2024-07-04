@@ -7,10 +7,13 @@ import { axiosInstance } from "../../config/axiosInstance";
 export const userSignupAction:any = createAsyncThunk(
   "user/signup",
   async (user: User, { rejectWithValue }) => {
+    console.log("🚀 ~ user:", user)
     try {
+      
       const { data } = await axiosInstance.post(`/register`, user);
       return data;
     } catch (error) {
+      console.log("🚀 ~ error:", error)
       return rejectWithValue(handleErrors(error));
     }
   }
