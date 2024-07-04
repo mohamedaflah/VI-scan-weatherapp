@@ -2,7 +2,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { LoaderButton } from "../components/custom/LoaderButton";
 import { Input } from "../components/ui/input";
 import { InputWithLabel } from "../components/custom/InputwithLabel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -10,13 +10,14 @@ import { loginFormSchema } from "../Schema/loginFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AppDispatch, RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { userSignupAction } from "../redux/actions/userSignp.action";
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
+import { userLoginAction } from "../redux/actions/userLoginaction";
 
 const Login = () => {
   const [showPass, setShowPass] = useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
-  const { loading } = useSelector((state: RootState) => state.user);
+  const { loading, user } = useSelector((state: RootState) => state.user);
   const {
     setValue,
     watch,
@@ -28,14 +29,19 @@ const Login = () => {
     defaultValues: {
       email: "",
       password: "",
-      confirmPassword: "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
   });
   const submitSignup = (values: z.infer<typeof loginFormSchema>) => {
-    dispatch(userSignupAction(values));
+    dispatch(userLoginAction(values));
   };
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate, user]);
   return (
     <main className="w-full h-screen overflow-hidden grid grid-cols-1 md:grid-cols-2">
       <section className="w-full h-full hidden md:block">
@@ -66,7 +72,7 @@ const Login = () => {
               errorMessage={errors && errors.email && errors.email.message}
             />
 
-            <div className="flex flex-col gap-1 relative">
+            <div className="flex flex-col gap-1 relative mt-5">
               <label htmlFor="" className="text-gray-600 text-[15px]">
                 Enter password
               </label>
@@ -95,29 +101,19 @@ const Login = () => {
                 />
               )}
             </div>
-            <InputWithLabel
-              type="password"
-              value={watch("confirmPassword")}
-              onChange={(e) => {
-                setValue("confirmPassword", e.target.value);
-                trigger("confirmPassword");
-              }}
-              label="Confirm password"
-              errorMessage={
-                errors &&
-                errors.confirmPassword &&
-                errors.confirmPassword.message
-              }
-              placeholder="enter confirm pass"
-            />
 
             <div className="flex flex-col gap-1 mt-2">
               <LoaderButton loading={loading} type="submit">
-                Sign in 
+                Sign in
               </LoaderButton>
             </div>
             <div className="w-full flex justify-end">
-                <span className="text-sm text-gray-500">Create an new Account <Link className="text-blue-500 font-medium" to={"/signup"}>Signup</Link> </span>
+              <span className="text-sm text-gray-500">
+                Create an new Account{" "}
+                <Link className="text-blue-500 font-medium" to={"/signup"}>
+                  Signup
+                </Link>{" "}
+              </span>
             </div>
           </div>
         </form>

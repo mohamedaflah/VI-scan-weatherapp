@@ -1,32 +1,17 @@
 import {
   CloudDrizzle,
   CloudSun,
-  LucideLogOut,
   LucideTrash,
   MapPin,
   Plus,
 } from "lucide-react";
 import { ScrollArea } from "../components/ui/scroll-area";
+import { HeaderBar } from "../components/Home/Header";
 
 const Home = () => {
   return (
     <main className="min-h-screen w-full p-5 flex flex-col gap-5 ">
-      <header className="w-full h-16 flex items-center rounded-2xl shadow-sm border px-3 justify-between">
-        <div className="flex gap-2 h-full items-center">
-          <img
-            src={"/images/user.jpg"}
-            className="rounded-full object-cover size-12"
-            alt=""
-          />
-          <div className="flex flex-col">
-            <span className="text-sm">Hi, Aflah</span>
-            <h3 className="font-medium">Mon, 17 May, 2023</h3>
-          </div>
-        </div>
-        <div className="size-12 rounded-2xl border flex items-center justify-center cursor-pointer">
-          <LucideLogOut className="w-5 font-thin text-gray-600" />
-        </div>
-      </header>
+      <HeaderBar />
       <section className="w-full grid gap-5 md:grid-cols-12 min-h-56 grid-cols-1 ">
         {/* 8501970-removebg-preview.png */}
         <div className="md:col-span-8 w-full h-full rounded-2xl border shadow-sm p-3 grid grid-rows-2">

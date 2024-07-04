@@ -1,5 +1,6 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
 import { handleErrors } from "../../util/errorHandler";
+import { axiosInstance } from "../../config/axiosInstance";
 
 export const userLoginAction: AsyncThunk<
   undefined,
@@ -7,9 +8,13 @@ export const userLoginAction: AsyncThunk<
   object
 > = createAsyncThunk(
   "user/login",
-  async (data: { email: string; password: string }, { rejectWithValue }) => {
+  async (
+    userdata: { email: string; password: string },
+    { rejectWithValue }
+  ) => {
     try {
-      data;
+      const { data } = await axiosInstance.post("/login", userdata);
+      return data;
     } catch (error) {
       return rejectWithValue(handleErrors(error));
     }

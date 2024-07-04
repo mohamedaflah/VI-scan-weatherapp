@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { userLoginAction } from "../actions/userLoginaction";
 import { verifyUser } from "../actions/verifyUseraction";
 import { getUserAction } from "../actions/gerUseraction";
+import { userLogoutAction } from "../actions/logoutUser.action";
 
 const initialState: UserReducerInitial = {
   loading: false,
@@ -24,6 +25,7 @@ const userReducer = createSlice({
       .addCase(userSignupAction.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.verificationSend = true;
+        state.user = payload.user;
         toast.success(payload.message);
         state.err = false;
       })
@@ -40,6 +42,7 @@ const userReducer = createSlice({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         state.user = (payload as any)?.user;
         state.err = false;
+        toast.success("Login successful");
       })
       .addCase(userLoginAction.rejected, (state, { payload }) => {
         state.loading = false;
@@ -55,6 +58,7 @@ const userReducer = createSlice({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         state.user = (payload as any).user;
         state.err = false;
+        toast.success("Verification successful");
       })
       .addCase(verifyUser.rejected, (state, { payload }) => {
         state.loading = false;
@@ -75,6 +79,21 @@ const userReducer = createSlice({
         state.loading = false;
         state.err = String(payload);
         state.user = null;
+      })
+      .addCase(userLogoutAction.pending, (state) => {
+        state.loading = false;
+      })
+      .addCase(userLogoutAction.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        payload;
+        state.err = false;
+        state.user = null;
+        toast.success("Logout successful");
+      })
+      .addCase(userLogoutAction.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.err = String(payload);
+        toast.error(state.err);
       });
   },
 });

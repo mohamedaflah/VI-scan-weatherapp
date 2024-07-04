@@ -2,7 +2,7 @@ import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { LoaderButton } from "../components/custom/LoaderButton";
 import { Input } from "../components/ui/input";
 import { InputWithLabel } from "../components/custom/InputwithLabel";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -20,15 +20,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../components/ui/alert-dialog";
-import { verifyUser } from "../redux/actions/verifyUseraction";
+
 import { cn } from "../lib/utils";
 
 const Signup = () => {
   const [showPass, setShowPass] = useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
-  const { loading, verificationSend, err } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { loading, err } = useSelector((state: RootState) => state.user);
   const {
     setValue,
     watch,
@@ -52,18 +50,7 @@ const Signup = () => {
     dispatch(userSignupAction(userValues));
   };
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  useEffect(() => {
-    verificationSend && setModalOpen(true);
-  }, [verificationSend]);
-  useEffect(() => {
-    const param = new URLSearchParams(window.location.search);
-    const token = param.get("qrt");
 
-    if (token) {
-      setModalOpen(true);
-      dispatch(verifyUser(token as string));
-    }
-  }, [dispatch]);
   return (
     <main className="w-full h-screen overflow-hidden grid grid-cols-1 md:grid-cols-2">
       <AlertDialog open={modalOpen} onOpenChange={setModalOpen}>
