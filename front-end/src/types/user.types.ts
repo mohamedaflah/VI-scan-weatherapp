@@ -12,5 +12,6 @@ export interface User {
 export interface UserReducerInitial {
   loading: boolean;
   err: string | boolean;
-  user: User|null;
+  user: User | null;
+  verificationSend: boolean;
 }
