@@ -7,6 +7,8 @@ import { nodeCache } from "../../../config/node-cache.config";
 import { generateVerficationLink } from "../../../utils/common/generateVerificationLink";
 import { sendVerficationLink } from "../../../infra/nodemailer/sendVerficationLink";
 import { comparePassword } from "../../../utils/security/comparePassword";
+import { generateJWTtoken } from "../../../utils/jwt/generateToken";
+import { User } from "../../../domain/entities/user.entity";
 
 export class UserRegisterController {
   private userUsecase: IUserUseCase;
@@ -15,7 +17,6 @@ export class UserRegisterController {
   }
   async registerUser(req: Request, res: Response, next: NextFunction) {
     try {
-      
       const { email } = req.body;
       let user = await this.userUsecase.checkUserWithEmail(email as string);
       if (user) {
@@ -25,20 +26,21 @@ export class UserRegisterController {
           "Conflict"
         );
       }
-      // user = await this.userUsecase.createUserUsecase(req.body);
-      // const token = generateJWTtoken({ id: user.id });
-      // res.cookie(process.env.VERIFIED_COOKIE_NAME as string, token);
       req.body.password = await hashPassword(String(req.body.password));
 
       nodeCache.set(email, req.body);
       console.log(req.body);
 
-      const verificationlink = generateVerficationLink(email, "qrt");
-      sendVerficationLink(email, verificationlink);
+      user = await this.userUsecase.createUserUsecase({
+        ...req.body,
+        verificationStatus: true,
+      } as User);
+      const verifyToken = generateJWTtoken({ id: user.id });
+      res.cookie(process.env.VERIFIED_COOKIE_NAME as string, verifyToken);
       return res.status(201).json({
         status: true,
-        message: "Verification link has been sended",
-        link: verificationlink,
+        message: "User created",
+        user,
       });
     } catch (error) {
       next(error);

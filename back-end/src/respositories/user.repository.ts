@@ -65,7 +65,7 @@ export class UserRepository implements IUserRepository {
       }
       return user;
     } catch (error: any) {
-      throw new Error(`Failed to retrieve user: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   }
   async getUserRepo(userId: string): Promise<User> {

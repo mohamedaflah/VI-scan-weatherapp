@@ -5,6 +5,7 @@ import { generateJWTtoken } from "../../../utils/jwt/generateToken";
 import { getPayloadWithToken } from "../../../utils/jwt/getPayloadwithToken";
 import { nodeCache } from "../../../config/node-cache.config";
 import { User } from "@prisma/client";
+import { JwtPayload } from "jsonwebtoken";
 
 export class VerifyUserController {
   private userUsecase: IUserUseCase;
@@ -14,7 +15,15 @@ export class VerifyUserController {
   async verifyUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { token } = req.body;
-      const email = getPayloadWithToken(token);
+      const { email } = getPayloadWithToken(token) as string | JwtPayload | any;
+      let userExist = await this.userUsecase.checkUserWithEmail(email);
+      if (userExist) {
+        throw new CustomeError(
+          "User already exist please login",
+          401,
+          "already exist"
+        );
+      }
       if (!email) {
         throw new CustomeError("Verification failed", 500, "failed");
       }
@@ -28,6 +37,9 @@ export class VerifyUserController {
       } as User);
       const verifyToken = generateJWTtoken({ id: user.id });
       res.cookie(process.env.VERIFIED_COOKIE_NAME as string, verifyToken);
+      nodeCache.set(user.email, null);
+      console.log(user);
+      
       return res
         .status(201)
         .json({ status: true, message: "User created", user });
