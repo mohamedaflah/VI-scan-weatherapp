@@ -32,9 +32,8 @@ export class UserRepository implements IUserRepository {
     email: string;
     password: string;
   }): Promise<User> {
-    console.log("🚀 ~ UserRepository ~ data:", data)
+    console.log("🚀 ~ UserRepository ~ data:", data);
     try {
-      
       const user = await db.user.findUnique({
         where: {
           email: data.email,
@@ -50,11 +49,14 @@ export class UserRepository implements IUserRepository {
           "not found"
         );
       }
-      
-      console.log(user,' ->');
-      
-      const passMatch = await comparePassword(data.password.trim(), user.password.trim());
-      console.log("🚀 ~ UserRepository ~ passMatch:", passMatch)
+
+      console.log(user, " ->");
+
+      const passMatch = await comparePassword(
+        data.password.trim(),
+        user.password.trim()
+      );
+      console.log("🚀 ~ UserRepository ~ passMatch:", passMatch);
       console.log(data.password, user.password);
       if (!passMatch) {
         throw new CustomeError(
@@ -99,6 +101,44 @@ export class UserRepository implements IUserRepository {
       return user ? user : null;
     } catch (error: any) {
       throw new Error(`Failed to check user with email: ${error.message}`);
+    }
+  }
+
+  async addFavouriteCityRepo(userId: string, cityname: string): Promise<User> {
+    try {
+      const user = await db.user.findUnique({
+        where: { id: userId },
+        include: { favouriteCities: true },
+      });
+      if (!user) {
+        throw new CustomeError("Something went wrong", 404, "wrong");
+      }
+      await db.favouriteCity.create({
+        data: {
+          cityname,
+          userId,
+        },
+      });
+      return user;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+  async deleteFavoriteCityRepo(userId: string, cityId: string): Promise<User> {
+    try {
+      const user = await db.user.findUnique({
+        where: { id: userId },
+        include: { favouriteCities: true },
+      });
+      if (!user) {
+        throw new Error(`User with ID ${userId} not found.`);
+      }
+      await db.favouriteCity.delete({
+        where: { id: cityId },
+      });
+      return user;
+    } catch (error: any) {
+      throw new Error(error);
     }
   }
 }
