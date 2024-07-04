@@ -6,6 +6,7 @@ import {
   MapPin,
   Plus,
 } from "lucide-react";
+import { ScrollArea } from "../components/ui/scroll-area";
 
 const Home = () => {
   return (
@@ -120,20 +121,8 @@ const Home = () => {
             <div className="w-full flex justify-between">
               <h1 className="font-medium text-[18px]">Past 7 days report</h1>
             </div>
-            <div className="w-full h-[280px] overflow-y-auto mt-2 space-y-2">
-              <div className="w-full h-36 rounded-2xl border p-3"></div>
-            </div>
-          </div>
-        </div>
-        <div className="w-full h-full rounded-2xl p-4 border shadow-sm">
-          <div className="w-full h-full flex flex-col">
-            <div className="w-full flex justify-between">
-              <h1 className="font-medium text-[18px]">
-                7 days weather forcast
-              </h1>
-            </div>
-            <div className="w-full h-[280px] overflow-y-auto mt-2 space-y-2">
-              <div className="w-full min-h-36 rounded-2xl border p-3">
+            <ScrollArea className="w-full h-[280px]   space-y-2">
+              <div className="w-full min-h-36 rounded-2xl border p-3 my-2">
                 <div className="w-full items-center flex gap-2">
                   <img
                     src="/images/3d-icon-weather-conditions-with-thunderstorm_23-2150108721-removebg-preview-min.png"
@@ -153,7 +142,38 @@ const Home = () => {
                   </div>
                 </div>
               </div>
+            </ScrollArea>
+          </div>
+        </div>
+        <div className="w-full h-full rounded-2xl p-4 border shadow-sm">
+          <div className="w-full h-full flex flex-col">
+            <div className="w-full flex justify-between">
+              <h1 className="font-medium text-[18px]">
+                7 days weather forcast
+              </h1>
             </div>
+            <ScrollArea className="w-full h-[280px]   space-y-2">
+              <div className="w-full min-h-36 rounded-2xl border p-3 my-2">
+                <div className="w-full items-center flex gap-2">
+                  <img
+                    src="/images/3d-icon-weather-conditions-with-thunderstorm_23-2150108721-removebg-preview-min.png"
+                    className="h-16 "
+                    alt=""
+                  />
+                  <h1>Mon, 17, 2023</h1>
+                </div>
+                <div className="flex px-2 flex-col gap-1">
+                  <div className="flex gap-2 text-sm font-medium">
+                    <CloudDrizzle className="text-gray-500 w-5" />
+                    <h3>20% cloud</h3>
+                  </div>
+                  <div className="flex gap-2 text-sm font-medium">
+                    <CloudDrizzle className="text-gray-500 w-5" />
+                    <h3>20% humidity</h3>
+                  </div>
+                </div>
+              </div>
+            </ScrollArea>
           </div>
         </div>
       </section>
