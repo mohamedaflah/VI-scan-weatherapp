@@ -4,6 +4,7 @@ import { UserRepository } from "../../respositories/user.repository";
 import { UserUseCase } from "../../application/usecases/user.usecase";
 import { LoginUserController } from "../../presentation/controllers/User/loginuser.controller";
 import { VerifyUserController } from "../../presentation/controllers/User/verifyuser.controller";
+import { validateUserData } from "../../presentation/middlewares/validateuserSignup";
 const router = Router();
 
 const repo = new UserRepository();
@@ -13,8 +14,12 @@ const register = new UserRegisterController(useCase);
 const login = new LoginUserController(useCase);
 const verify = new VerifyUserController(useCase);
 
-router.post(`/register`, register.registerUser.bind(register));
-router.post(`/login`, login.loginUser.bind(login));
+router.post(
+  `/register`,
+  validateUserData,
+  register.registerUser.bind(register)
+);
+router.post(`/login`, validateUserData, login.loginUser.bind(login));
 router.post(`/verify`, verify.verifyUser.bind(verify));
 
 export default router;

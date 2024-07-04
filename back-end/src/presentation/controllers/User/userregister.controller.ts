@@ -15,6 +15,7 @@ export class UserRegisterController {
   }
   async registerUser(req: Request, res: Response, next: NextFunction) {
     try {
+      
       const { email } = req.body;
       let user = await this.userUsecase.checkUserWithEmail(email as string);
       if (user) {
