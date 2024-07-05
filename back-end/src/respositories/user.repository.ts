@@ -119,7 +119,7 @@ export class UserRepository implements IUserRepository {
           userId,
         },
       });
-      return user;
+      return await this.getUserRepo(userId);
     } catch (error: any) {
       throw new Error(error);
     }

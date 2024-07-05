@@ -14,5 +14,5 @@ export interface UserReducerInitial {
   err: string | boolean;
   user: User | null;
   verificationSend: boolean;
-  favoriteCities: null | string[];
+  selectedCity: string | null;
 }

@@ -8,8 +8,12 @@ export class UserUseCase implements IUserUseCase {
   constructor(repository: IUserRepository) {
     this.repository = repository;
   }
-  addFavoriteCity(userId: string, cityname: string): Promise<User> {
-    throw new Error("Method not implemented.");
+  async addFavoriteCity(userId: string, cityname: string): Promise<User> {
+    console.log("🚀 ~ UserUseCase ~ addFavouriteCity ~ userId:", userId);
+    return await this.repository.addFavouriteCityRepo(userId, cityname);
+  }
+  async deleteFavoriteCity(userId: string, cityId: string): Promise<User> {
+    return await this.repository.deleteFavoriteCityRepo(userId, cityId);
   }
   async createUserUsecase(body: User): Promise<User> {
     const user = await this.repository.createUserRepo(body);
@@ -26,11 +30,5 @@ export class UserUseCase implements IUserUseCase {
   }
   async checkUserWithEmail(email: string): Promise<User | null> {
     return await this.repository.checkUserWithEmailRepo(email);
-  }
-  async addFavouriteCity(userId: string, cityname: string): Promise<User> {
-    return await this.repository.addFavouriteCityRepo(userId, cityname);
-  }
-  async deleteFavoriteCity(userId: string, cityId: string): Promise<User> {
-    return await this.repository.deleteFavoriteCityRepo(userId, cityId);
   }
 }

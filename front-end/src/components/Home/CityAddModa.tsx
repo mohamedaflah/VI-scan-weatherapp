@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -10,10 +10,16 @@ import {
 } from "../ui/alert-dialog";
 import { Plus, X } from "lucide-react";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderButton } from "../custom/LoaderButton";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { addCity } from "../../redux/actions/cityActions/addCityAction";
+import { isValidCity } from "../../util/validateCity";
+import toast from "react-hot-toast";
 const cityFormSchema = z.object({
   cityname: z
     .string()
@@ -37,8 +43,30 @@ export function CityAddModal() {
     mode: "onChange",
     reValidateMode: "onChange",
   });
-  const submitCityForm = (values: z.infer<typeof cityFormSchema>) => {
-    values;
+  const { loading, user } = useSelector((state: RootState) => state.user);
+  const [closeOption, setClosOption] = useState<boolean>(true);
+  useEffect(() => {
+    if (user && user.favouriteCities && user?.favouriteCities?.length <= 0) {
+      setModalOpen(true);
+      setClosOption(false);
+    } else {
+      setModalOpen(false);
+    }
+  }, [user]);
+  const dispatch: AppDispatch = useDispatch();
+  const submitCityForm = async (values: z.infer<typeof cityFormSchema>) => {
+    const cityValid = isValidCity(values.cityname);
+    if (!cityValid) {
+      return toast.error("City is not valid");
+    }
+    dispatch(
+      addCity({ cityname: values.cityname, userId: user?.id as string })
+    ).then((res) => {
+      if (res.type.endsWith("fulfilled")) {
+        setModalOpen(false);
+        setClosOption(true);
+      }
+    });
   };
   return (
     <AlertDialog open={modalOpen} onOpenChange={setModalOpen}>
@@ -52,13 +80,17 @@ export function CityAddModal() {
         <AlertDialogHeader>
           <div className="w-full flex justify-between">
             <AlertDialogTitle>Add city</AlertDialogTitle>
-            <AlertDialogCancel className="border-none p-0 m-0 h-auto">
-              <X className="w-5" />
-            </AlertDialogCancel>
+            {closeOption && (
+              <>
+                <AlertDialogCancel className="border-none p-0 m-0 h-auto">
+                  <X className="w-5" />
+                </AlertDialogCancel>
+              </>
+            )}
           </div>
 
           <AlertDialogDescription className="flex flex-col relative">
-            please add new city
+            Please add new city
             <form
               className="w-full flex flex-col mt-2 gap-3"
               onSubmit={handleSubmit(submitCityForm)}
@@ -77,7 +109,13 @@ export function CityAddModal() {
                   {errors && errors.cityname && errors.cityname.message}
                 </span>
               </div>
-              <Button className="bg-blue-500 hover:bg-blue-400">Submit</Button>
+              <LoaderButton
+                className="bg-blue-500 hover:bg-blue-400"
+                loading={loading}
+                type="submit"
+              >
+                Submit
+              </LoaderButton>
             </form>
           </AlertDialogDescription>
         </AlertDialogHeader>

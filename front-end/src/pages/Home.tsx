@@ -1,20 +1,43 @@
-import {
-  CloudDrizzle,
-  CloudSun,
-  LucideTrash,
-  MapPin,
-  Plus,
-} from "lucide-react";
+import { CloudDrizzle, CloudSun, LucideTrash, MapPin } from "lucide-react";
 import { ScrollArea } from "../components/ui/scroll-area";
 import { HeaderBar } from "../components/Home/Header";
 import { CityAddModal } from "../components/Home/CityAddModa";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
+import { useEffect, useState } from "react";
+import { setSelectedCity } from "../redux/reducers/user.reducer";
+import { cn } from "../lib/utils";
+
+import toast from "react-hot-toast";
+import { WeatherData } from "../types/weather";
+import { getCurrentWeatherByCity } from "../api/currentWeatherData";
 
 const Home = () => {
+  const { user, selectedCity } = useSelector((state: RootState) => state.user);
+  const dispatch: AppDispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setSelectedCity(user?.favouriteCities?.[0]?.cityname));
+  }, []);
+  const [currentCityWeather, setCurrentCityWeather] =
+    useState<WeatherData | null>(null);
+  useEffect(() => {
+    if (!selectedCity) {
+      return;
+    }
+    getCurrentWeatherByCity(selectedCity)
+      .then((res) => {
+        console.log("🚀 ~ .then ~ res.data:", res);
+        setCurrentCityWeather(res);
+      })
+      .catch((err) => {
+        console.log("🚀 ~ .then ~ err:", err);
+        toast.error(`Weather ${err.message}`);
+      });
+  }, [selectedCity]);
   return (
     <main className="min-h-screen w-full p-5 flex flex-col gap-5 ">
       <HeaderBar />
       <section className="w-full grid gap-5 md:grid-cols-12 min-h-56 grid-cols-1 ">
-        {/* 8501970-removebg-preview.png */}
         <div className="md:col-span-8 w-full h-full rounded-2xl border shadow-sm p-3 grid grid-rows-2">
           <div className="w-full h-full flex gap-8 items-center justify-between  ">
             <img
@@ -23,19 +46,29 @@ const Home = () => {
               alt=""
             />
             <div className="flex flex-col gap-1">
-              <h2 className="font-medium  text-3xl">Berlin</h2>
-              <span className="text-sm font-medium">India</span>
+              <h2 className="font-medium  text-3xl">
+                {currentCityWeather?.name}
+              </h2>
+              <span className="text-sm font-medium">
+                {currentCityWeather?.sys?.country}
+              </span>
             </div>
             <div className="flex flex-col gap-1">
-              <h2 className="font-medium  text-3xl">+20°</h2>
+              <h2 className="font-medium  text-3xl">
+                +{currentCityWeather?.main?.temp}°
+              </h2>
               <span className="text-sm font-medium">Temprature</span>
             </div>
             <div className="flex flex-col gap-1">
-              <h2 className="font-medium  text-3xl">+20°</h2>
+              <h2 className="font-medium  text-3xl">
+                +{currentCityWeather?.main?.humidity}°
+              </h2>
               <span className="text-sm font-medium">Humidity</span>
             </div>
             <div className="flex flex-col gap-1">
-              <h2 className="font-medium  text-3xl">12km</h2>
+              <h2 className="font-medium  text-3xl">
+                {currentCityWeather?.wind?.speed}km
+              </h2>
               <span className="text-sm font-medium">wind speed</span>
             </div>
             <div></div>
@@ -59,14 +92,16 @@ const Home = () => {
           <div className="min-h-20 min-w-36 rounded-2xl border absolute left-10 top-7 bg-white/25 shadow-sm flex flex-col p-2">
             <div className="flex gap-1 text-gray-500 items-center">
               <MapPin className="w-5" />
-              <span className="text-sm">Berlin, Germany</span>
+              <span className="text-sm">
+                {currentCityWeather?.name}, {currentCityWeather?.sys?.country}
+              </span>
             </div>
             <div className="flex flex-col pl-2 ">
               <span className="text-[12px] font-medium text-gray-600">
-                20° mostly cloudy
+                {currentCityWeather?.main?.temp}° mostly cloudy
               </span>
               <span className="text-[12px] font-medium text-gray-600">
-                20% humidity
+                {currentCityWeather?.main?.humidity}% humidity
               </span>
             </div>
           </div>
@@ -78,25 +113,27 @@ const Home = () => {
           <div className="w-full h-full flex flex-col">
             <div className="w-full flex justify-between">
               <h1 className="font-medium text-[18px]">Favorite cities</h1>
-              <CityAddModal/>
+              <CityAddModal />
             </div>
             <div className="w-full h-[280px] overflow-y-auto mt-2 space-y-2">
-              <div className="h-14 rounded-2xl w-full border px-3 flex items-center font-<medium justify-between">
-                <div>
-                  <h1>Berlin</h1>
+              {user?.favouriteCities?.map((city) => (
+                <div
+                  key={city.cityname}
+                  className={cn(
+                    "h-14 rounded-2xl w-full border px-3 flex items-center font-<medium justify-between",
+                    {
+                      "bg-slate-100": String(selectedCity) == city?.cityname,
+                    }
+                  )}
+                >
+                  <div>
+                    <h1>{city.cityname}</h1>
+                  </div>
+                  <div className="size-10 rounded-2xl border shadow-sm flex items-center justify-center">
+                    <LucideTrash className="w-5 font-thin text-gray-600" />
+                  </div>
                 </div>
-                <div className="size-10 rounded-2xl border shadow-sm flex items-center justify-center">
-                  <LucideTrash className="w-5 font-thin text-gray-600" />
-                </div>
-              </div>
-              <div className="h-14 rounded-2xl w-full border px-3 flex items-center font-<medium justify-between bg-slate-100">
-                <div>
-                  <h1>Berlin</h1>
-                </div>
-                <div className="size-10 rounded-2xl border shadow-sm flex items-center justify-center">
-                  <LucideTrash className="w-5 font-thin text-gray-600" />
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

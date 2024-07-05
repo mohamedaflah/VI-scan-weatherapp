@@ -10,9 +10,10 @@ export const addCity: AsyncThunk<
   "user/add-city",
   async (body: { userId: string; cityname: string }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post(`/favorites`, body);
+      const { data } = await axiosInstance.post(`/city/favorites`, body);
       return data;
     } catch (error) {
+      console.log("🚀 ~ error:", error)
       return rejectWithValue(handleErrors(error));
     }
   }
