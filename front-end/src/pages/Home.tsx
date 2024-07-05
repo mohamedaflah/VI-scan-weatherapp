@@ -11,6 +11,12 @@ import { cn } from "../lib/utils";
 import toast from "react-hot-toast";
 import { WeatherData } from "../types/weather";
 import { getCurrentWeatherByCity } from "../api/currentWeatherData";
+import { getPast7DayHistoricalData } from "../api/getPast7dayData";
+import { get7DayForecast } from "../api/get7dayforcast";
+import { WeatherBit7DayResponse } from "../types/weatherbitpast7dayres";
+import { ForecastWeatherData } from "../types/weatherForcaseweatherbit";
+import { format } from "date-fns";
+import { getCurrentDayWeatherByTime } from "../api/getWeatherByTime";
 
 const Home = () => {
   const { user, selectedCity } = useSelector((state: RootState) => state.user);
@@ -20,19 +26,34 @@ const Home = () => {
   }, []);
   const [currentCityWeather, setCurrentCityWeather] =
     useState<WeatherData | null>(null);
+  const [pastWeather, setPastweather] = useState<
+    WeatherBit7DayResponse[] | null
+  >(null);
+  const [sevenDayForcast, setForcast] = useState<ForecastWeatherData[] | null>(
+    null
+  );
   useEffect(() => {
     if (!selectedCity) {
       return;
     }
     getCurrentWeatherByCity(selectedCity)
       .then((res) => {
-        console.log("🚀 ~ .then ~ res.data:", res);
         setCurrentCityWeather(res);
       })
       .catch((err) => {
         console.log("🚀 ~ .then ~ err:", err);
         toast.error(`Weather ${err.message}`);
       });
+    getPast7DayHistoricalData(selectedCity).then((res) => {
+      setPastweather(res);
+    });
+    get7DayForecast(selectedCity).then((res) => {
+      setForcast(res);
+    });
+    getCurrentDayWeatherByTime(selectedCity).then(res=>{
+      console.log(res);
+      
+    })
   }, [selectedCity]);
   return (
     <main className="min-h-screen w-full p-5 flex flex-col gap-5 ">
@@ -143,26 +164,33 @@ const Home = () => {
               <h1 className="font-medium text-[18px]">Past 7 days report</h1>
             </div>
             <ScrollArea className="w-full h-[280px]   space-y-2">
-              <div className="w-full min-h-36 rounded-2xl border p-3 my-2">
-                <div className="w-full items-center flex gap-2">
-                  <img
-                    src="/images/3d-icon-weather-conditions-with-thunderstorm_23-2150108721-removebg-preview-min.png"
-                    className="h-16 "
-                    alt=""
-                  />
-                  <h1>Mon, 17, 2023</h1>
-                </div>
-                <div className="flex px-2 flex-col gap-1">
-                  <div className="flex gap-2 text-sm font-medium">
-                    <CloudDrizzle className="text-gray-500 w-5" />
-                    <h3>20% cloud</h3>
+              {pastWeather?.map((weahter, I) => (
+                <div
+                  key={I}
+                  className="w-full min-h-36 rounded-2xl border p-3 my-2"
+                >
+                  <div className="w-full items-center flex gap-2">
+                    <img
+                      src="/images/3d-icon-weather-conditions-with-thunderstorm_23-2150108721-removebg-preview-min.png"
+                      className="h-16 "
+                      alt=""
+                    />
+                    <h1>
+                      {format(new Date(weahter?.datetime), "EEE, d MMM, yyyy")}
+                    </h1>
                   </div>
-                  <div className="flex gap-2 text-sm font-medium">
-                    <CloudDrizzle className="text-gray-500 w-5" />
-                    <h3>20% humidity</h3>
+                  <div className="flex px-2 flex-col gap-1">
+                    <div className="flex gap-2 text-sm font-medium">
+                      <CloudDrizzle className="text-gray-500 w-5" />
+                      <h3>{weahter.temp}% cloud</h3>
+                    </div>
+                    <div className="flex gap-2 text-sm font-medium">
+                      <CloudDrizzle className="text-gray-500 w-5" />
+                      <h3>{weahter.clouds}% humidity</h3>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </ScrollArea>
           </div>
         </div>
@@ -174,26 +202,33 @@ const Home = () => {
               </h1>
             </div>
             <ScrollArea className="w-full h-[280px]   space-y-2">
-              <div className="w-full min-h-36 rounded-2xl border p-3 my-2">
-                <div className="w-full items-center flex gap-2">
-                  <img
-                    src="/images/3d-icon-weather-conditions-with-thunderstorm_23-2150108721-removebg-preview-min.png"
-                    className="h-16 "
-                    alt=""
-                  />
-                  <h1>Mon, 17, 2023</h1>
-                </div>
-                <div className="flex px-2 flex-col gap-1">
-                  <div className="flex gap-2 text-sm font-medium">
-                    <CloudDrizzle className="text-gray-500 w-5" />
-                    <h3>20% cloud</h3>
+              {sevenDayForcast?.map((weather, id) => (
+                <div
+                  key={id}
+                  className="w-full min-h-36 rounded-2xl border p-3 my-2"
+                >
+                  <div className="w-full items-center flex gap-2">
+                    <img
+                      src="/images/3d-icon-weather-conditions-with-thunderstorm_23-2150108721-removebg-preview-min.png"
+                      className="h-16 "
+                      alt=""
+                    />
+                    <h1>
+                      {format(new Date(weather?.datetime), "EEE, d MMM, yyyy")}
+                    </h1>
                   </div>
-                  <div className="flex gap-2 text-sm font-medium">
-                    <CloudDrizzle className="text-gray-500 w-5" />
-                    <h3>20% humidity</h3>
+                  <div className="flex px-2 flex-col gap-1">
+                    <div className="flex gap-2 text-sm font-medium">
+                      <CloudDrizzle className="text-gray-500 w-5" />
+                      <h3>{weather.temp}% cloud</h3>
+                    </div>
+                    <div className="flex gap-2 text-sm font-medium">
+                      <CloudDrizzle className="text-gray-500 w-5" />
+                      <h3>{weather.app_max_temp}% humidity</h3>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </ScrollArea>
           </div>
         </div>
