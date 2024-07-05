@@ -28,7 +28,7 @@ Open Terminal and run the following commands
 
 # Login page
 
-[![Signup page](/media/image2.png)]()
+[![Signup page](/media/dashboard.png)]()
 
 # Dashboard page
 
