@@ -20,6 +20,10 @@ Open Terminal and run the following commands
 
 #
 
+[Api documentation](https://documenter.getpostman.com/view/29729590/2sA3dyiB2h)
+
+#
+
 #
 
 # Signup page
