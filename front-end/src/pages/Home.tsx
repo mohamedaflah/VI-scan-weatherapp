@@ -50,10 +50,9 @@ const Home = () => {
     get7DayForecast(selectedCity).then((res) => {
       setForcast(res);
     });
-    getCurrentDayWeatherByTime(selectedCity).then(res=>{
+    getCurrentDayWeatherByTime(selectedCity).then((res) => {
       console.log(res);
-      
-    })
+    });
   }, [selectedCity]);
   return (
     <main className="min-h-screen w-full p-5 flex flex-col gap-5 ">
@@ -98,11 +97,15 @@ const Home = () => {
             <div className="inline-block">
               <div className="h-full w-20 shadow-sm border rounded-2xl p-2 flex flex-col items-center justify-between">
                 <div>
-                  <span className="text-sm font-medium">10 am</span>
+                  <span className="text-sm font-medium">
+                    {format(Date.now(), "h:mm a")}
+                  </span>
                 </div>
                 <CloudSun size={27} />
                 <div>
-                  <span className="text-sm font-medium">24°</span>
+                  <span className="text-sm font-medium">
+                    {currentCityWeather?.main.temp}°
+                  </span>
                 </div>
               </div>
             </div>
@@ -139,9 +142,12 @@ const Home = () => {
             <div className="w-full h-[280px] overflow-y-auto mt-2 space-y-2">
               {user?.favouriteCities?.map((city) => (
                 <div
+                  onClick={() => {
+                    dispatch(setSelectedCity(city.cityname));
+                  }}
                   key={city.cityname}
                   className={cn(
-                    "h-14 rounded-2xl w-full border px-3 flex items-center font-<medium justify-between",
+                    "h-14 rounded-2xl w-full border cursor-pointer px-3 flex items-center font-<medium justify-between",
                     {
                       "bg-slate-100": String(selectedCity) == city?.cityname,
                     }
