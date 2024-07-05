@@ -23,6 +23,7 @@ export class GetUserController {
         throw new CustomeError("Un autherized", 401, "un auth");
       }
       const user = await this.userUsecase.getUserUsecase(payload.id);
+      console.log("🚀 ~ GetUserController ~ getUser ~ user:", user)
 
       return res
         .status(200)

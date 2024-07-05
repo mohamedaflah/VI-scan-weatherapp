@@ -6,17 +6,23 @@ import { userLoginAction } from "../actions/userLoginaction";
 import { verifyUser } from "../actions/verifyUseraction";
 import { getUserAction } from "../actions/gerUseraction";
 import { userLogoutAction } from "../actions/logoutUser.action";
+import { addCity } from "../actions/cityActions/addCityAction";
 
 const initialState: UserReducerInitial = {
   loading: false,
   err: false,
   user: null,
   verificationSend: false,
+  selectedCity: null,
 };
 const userReducer = createSlice({
   name: "user reducer",
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedCity: (state, { payload }) => {
+      state.selectedCity = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(userSignupAction.pending, (state) => {
@@ -94,8 +100,22 @@ const userReducer = createSlice({
         state.loading = false;
         state.err = String(payload);
         toast.error(state.err);
+      })
+      .addCase(addCity.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addCity.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        state.user = (payload as any).user;
+        toast.success("City added");
+      })
+      .addCase(addCity.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.err = payload as string;
+        toast.error(state.err);
       });
   },
 });
-
+export const { setSelectedCity } = userReducer.actions;
 export default userReducer.reducer;
