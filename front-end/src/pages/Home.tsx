@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { ScrollArea } from "../components/ui/scroll-area";
 import { HeaderBar } from "../components/Home/Header";
+import { CityAddModal } from "../components/Home/CityAddModa";
 
 const Home = () => {
   return (
@@ -77,9 +78,7 @@ const Home = () => {
           <div className="w-full h-full flex flex-col">
             <div className="w-full flex justify-between">
               <h1 className="font-medium text-[18px]">Favorite cities</h1>
-              <div className="size-10 border rounded-2xl flex items-center justify-center cursor-pointer">
-                <Plus className="w-5" />
-              </div>
+              <CityAddModal/>
             </div>
             <div className="w-full h-[280px] overflow-y-auto mt-2 space-y-2">
               <div className="h-14 rounded-2xl w-full border px-3 flex items-center font-<medium justify-between">

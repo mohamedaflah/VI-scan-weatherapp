@@ -12,6 +12,7 @@ const initialState: UserReducerInitial = {
   err: false,
   user: null,
   verificationSend: false,
+  favoriteCities: null,
 };
 const userReducer = createSlice({
   name: "user reducer",
