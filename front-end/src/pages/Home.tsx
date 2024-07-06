@@ -66,14 +66,14 @@ const Home = () => {
       <HeaderBar />
       <section className="w-full grid gap-5 md:grid-cols-12 min-h-56 grid-cols-1 ">
         <div className="md:col-span-8 w-full h-full rounded-2xl border shadow-sm p-3 grid grid-rows-2">
-          <div className="w-full h-full flex gap-8 items-center justify-between  ">
+          <div className="w-full h-full flex gap-8 items-center justify-between flex-wrap  ">
             <img
               src="/images/8501970-removebg-preview.png"
               className="h-24 drop-shadow-sm -ml-2"
               alt=""
             />
             <div className="flex flex-col gap-1">
-              <h2 className="font-medium  text-3xl">
+              <h2 className="font-medium text-1xl sm:text-2xl  md:text-3xl">
                 {currentCityWeather?.name}
               </h2>
               <span className="text-sm font-medium">
@@ -81,19 +81,19 @@ const Home = () => {
               </span>
             </div>
             <div className="flex flex-col gap-1">
-              <h2 className="font-medium  text-3xl">
+              <h2 className="font-medium  text-1xl sm:text-2xl  md:text-3xl">
                 +{currentCityWeather?.main?.temp}°
               </h2>
               <span className="text-sm font-medium">Temprature</span>
             </div>
             <div className="flex flex-col gap-1">
-              <h2 className="font-medium  text-3xl">
+              <h2 className="font-medium  text-1xl sm:text-2xl  md:text-3xl">
                 +{currentCityWeather?.main?.humidity}°
               </h2>
               <span className="text-sm font-medium">Humidity</span>
             </div>
             <div className="flex flex-col gap-1">
-              <h2 className="font-medium  text-3xl">
+              <h2 className="font-medium  text-1xl sm:text-2xl  md:text-3xl">
                 {currentCityWeather?.wind?.speed}km
               </h2>
               <span className="text-sm font-medium">wind speed</span>
