@@ -16,7 +16,6 @@ import { get7DayForecast } from "../api/get7dayforcast";
 import { WeatherBit7DayResponse } from "../types/weatherbitpast7dayres";
 import { ForecastWeatherData } from "../types/weatherForcaseweatherbit";
 import { format } from "date-fns";
-import { getCurrentDayWeatherByTime } from "../api/getWeatherByTime";
 
 const Home = () => {
   const { user, selectedCity } = useSelector((state: RootState) => state.user);
@@ -24,6 +23,13 @@ const Home = () => {
   useEffect(() => {
     dispatch(setSelectedCity(user?.favouriteCities?.[0]?.cityname));
   }, []);
+  // useEffect(() => {
+  //   if (user?.favouriteCities) {
+  //     if (user?.favouriteCities?.length < 2) {
+  //       dispatch(setSelectedCity(user?.favouriteCities?.[0]?.cityname));
+  //     }
+  //   }
+  // }, [dispatch, user?.favouriteCities]);
   const [currentCityWeather, setCurrentCityWeather] =
     useState<WeatherData | null>(null);
   const [pastWeather, setPastweather] = useState<
@@ -38,6 +44,7 @@ const Home = () => {
     }
     getCurrentWeatherByCity(selectedCity)
       .then((res) => {
+        console.log("🚀 ~ .then ~ res:", res)
         setCurrentCityWeather(res);
       })
       .catch((err) => {
@@ -47,12 +54,12 @@ const Home = () => {
     getPast7DayHistoricalData(selectedCity).then((res) => {
       setPastweather(res);
     });
+    
     get7DayForecast(selectedCity).then((res) => {
+      console.log("🚀 ~ get7DayForecast ~ res:", res)
       setForcast(res);
     });
-    getCurrentDayWeatherByTime(selectedCity).then((res) => {
-      console.log(res);
-    });
+
   }, [selectedCity]);
   return (
     <main className="min-h-screen w-full p-5 flex flex-col gap-5 ">
@@ -139,7 +146,7 @@ const Home = () => {
               <h1 className="font-medium text-[18px]">Favorite cities</h1>
               <CityAddModal />
             </div>
-            <div className="w-full h-[280px] overflow-y-auto mt-2 space-y-2">
+            <ScrollArea className="w-full h-[280px] ">
               {user?.favouriteCities?.map((city) => (
                 <div
                   onClick={() => {
@@ -147,7 +154,7 @@ const Home = () => {
                   }}
                   key={city.cityname}
                   className={cn(
-                    "h-14 rounded-2xl w-full border cursor-pointer px-3 flex items-center font-<medium justify-between",
+                    "h-14 rounded-2xl w-full border my-2 cursor-pointer px-3 flex items-center font-<medium justify-between",
                     {
                       "bg-slate-100": String(selectedCity) == city?.cityname,
                     }
@@ -161,7 +168,7 @@ const Home = () => {
                   </div>
                 </div>
               ))}
-            </div>
+            </ScrollArea>
           </div>
         </div>
         <div className="w-full h-full rounded-2xl p-4 border shadow-sm">

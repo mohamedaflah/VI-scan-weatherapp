@@ -33,6 +33,7 @@ export function CityAddModal() {
     setValue,
     trigger,
     watch,
+    reset,
     formState: { errors },
     handleSubmit,
   } = useForm<z.infer<typeof cityFormSchema>>({
@@ -55,7 +56,7 @@ export function CityAddModal() {
   }, [user]);
   const dispatch: AppDispatch = useDispatch();
   const submitCityForm = async (values: z.infer<typeof cityFormSchema>) => {
-    const cityValid = isValidCity(values.cityname);
+    const cityValid = await isValidCity(values.cityname);
     if (!cityValid) {
       return toast.error("City is not valid");
     }
@@ -65,6 +66,9 @@ export function CityAddModal() {
       if (res.type.endsWith("fulfilled")) {
         setModalOpen(false);
         setClosOption(true);
+        reset({
+          cityname: "", // New default value or initial value for cityname
+        });
       }
     });
   };

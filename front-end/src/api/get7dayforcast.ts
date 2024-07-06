@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
+import toast from "react-hot-toast";
 
 interface ForecastWeatherResponse {
   data: {
@@ -25,7 +26,11 @@ export const get7DayForecast = async (city: string): Promise<any> => {
     // Handle the data as needed
     return response.data.data;
   } catch (error: any) {
-    console.error("Error fetching 7-day forecast data:", error.message);
+    console.log(
+      "Error fetching 7-day forecast data: ------------>",
+      error
+    );
+    toast.error(error.message)
     // Handle errors
   }
 };
