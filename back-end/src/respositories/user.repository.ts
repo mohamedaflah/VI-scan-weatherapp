@@ -97,7 +97,7 @@ export class UserRepository implements IUserRepository {
           email: email,
         },
       });
-
+      
       return user ? user : null;
     } catch (error: any) {
       throw new Error(`Failed to check user with email: ${error.message}`);
